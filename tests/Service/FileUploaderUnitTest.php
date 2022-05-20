@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Service;
+
+use Monolog\Test\TestCase;
+use App\Service\FileUploader;
+use League\Flysystem\FilesystemInterface;
+use PHPUnit\Framework\MockObject\MockObject;
+
+class FileUploaderUnitTest extends TestCase
+{
+    public function testSucess()
+    {
+
+        $base64Image = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACMAAAAjCAYAAAAe2bNZAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyJpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuMy1jMDExIDY2LjE0NTY2MSwgMjAxMi8wMi8wNi0xNDo1NjoyNyAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENTNiAoV2luZG93cykiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6OEJDMEIxMjNGRjJFMTFFQkI4QzFBNDI0QkJCQ0REQTMiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6OEJDMEIxMjRGRjJFMTFFQkI4QzFBNDI0QkJCQ0REQTMiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDo4QkMwQjEyMUZGMkUxMUVCQjhDMUE0MjRCQkJDRERBMyIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDo4QkMwQjEyMkZGMkUxMUVCQjhDMUE0MjRCQkJDRERBMyIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PrpiqqUAAAe6SURBVHjavFh7bBxH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";
+
+        $data = explode(',', $base64Image);
+        /**
+         * @var FilesystemInterface&MockObject $filesystem
+         */
+
+        $filesystem = $this->getMockBuilder(FilesystemInterface::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $filesystem
+            ->expects(self::exactly(1))
+            ->method('write')
+            ->with($this->isType('string'), base64_decode($data[1]));
+
+
+        $fileUploader = new FileUploader($filesystem);
+        $filename = $fileUploader->uploadBase64File($base64Image);
+
+        $this->assertNotEmpty($filename);
+        //$this->assertContains('.jpeg', $filename);
+    }
+}
