@@ -4,11 +4,10 @@ namespace App\Controller\Api;
 
 use App\Entity\Book;
 use App\Form\Model\BookDto;
+use App\Service\FileUploader;
 use App\Form\Type\BookFormType;
 use App\Repository\BookRepository;
-use App\Service\FileUploader;
 use Doctrine\ORM\EntityManagerInterface;
-use League\Flysystem\FilesystemInterface;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\AbstractFOSRestController;

@@ -4,10 +4,9 @@ namespace App\Service;
 
 use League\Flysystem\FilesystemInterface;
 
-
 class FileUploader {
 
-    private $filesystem;
+    private $defaultStorage;
 
     public function __construct(FilesystemInterface $defaultStorage)
     {
