@@ -1,0 +1,6 @@
+doctrine:
+    dbal:
+        driver: pdo_mysql
+        dbname: "symfony4-library_test"
+        #path: '%kernel.cache_dir%\test.sqlite'
+        url: null
