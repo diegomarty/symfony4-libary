@@ -11,6 +11,7 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use FOS\RestBundle\Controller\Annotations as Rest;
 use FOS\RestBundle\Controller\AbstractFOSRestController;
+use Symfony\Component\BrowserKit\Response;
 
 class BooksController extends AbstractFOSRestController
 {
@@ -38,7 +39,11 @@ class BooksController extends AbstractFOSRestController
         $form = $this->createForm(BookFormType::class, $bookDto);
         $form->handleRequest($request);
 
-        if($form->isSubmitted() && $form->isValid()) {
+            if(!$form->isSubmitted()){
+                return new Response('', 400);
+            }
+
+        if($form->isValid()) {
 
             $book = new Book();
             $book->setTitle($bookDto->title);
